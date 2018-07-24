@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netperf-pod
+  labels:
+    app: netperf-pod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: netperf-pod
+  template:
+    metadata:
+      labels:
+        app: netperf-pod
+    spec:
+      containers:
+      - name: netperf-pod
+        image: leannet/k8s-netperf:latest
+        ports:
+        - containerPort: 5001
+        - containerPort: 12865
+        #imagePullPolicy: Never
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: netperf-server
+  labels:
+    name: netperf-server
+    app: netperf
+spec:
+  ports:
+    # the port that this service should serve on
+  - name: iperf-tcp
+    protocol: TCP
+    port: 5001
+    targetPort: 5001
+  - name: iperf-udp
+    protocol: UDP
+    port: 5001
+    targetPort: 5001
+  selector:
+    app: netperf-pod
+
+---
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: netperf-pod
+  labels:
+    app: netperf-pod
+spec:
+  selector:
+    matchLabels:
+      app: netperf-pod
+  template:
+    metadata:
+      labels:
+        app: netperf-pod
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: netperf-pod
+        image: leannet/k8s-netperf:latest
+        ports:
+        - containerPort: 5001
+        - containerPort: 12865
+
+---
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: netperf-host
+  labels:
+    app: netperf-host
+spec:
+  selector:
+    matchLabels:
+      app: netperf-host
+  template:
+    metadata:
+      labels:
+        app: netperf-host
+    spec:
+      hostNetwork: true
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: netperf-host
+        image: leannet/k8s-netperf:latest
+        ports:
+        - containerPort: 5001
+        - containerPort: 12865        
