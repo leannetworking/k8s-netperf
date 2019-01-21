@@ -2,5 +2,7 @@
 
 netserver
 iperf -u -s &
-iperf -s
+iperf -s &
+fortio server
+
 
