@@ -41,5 +41,5 @@ In all scenarios* the following metrics are measured with the corresponding tool
 You can use the `--nobaseline` argument to skip the baselane measurements, since baseline measurements tends to have the same result.
 Thus run `perl runNetPerfTest.pl --nobaseline 2>>log.txt` to run only scenarios #4, #6 and #9.
 
-*In scenario #9 we don't run Netperf, since you can't connect to it via ClusterIP due to the its internal mechanism (and how Kubernetes abstracts services).
+*In scenario #9 we don't run Netperf, since you can't connect to it via ClusterIP due to its internal mechanism (and how Kubernetes abstracts services).
 
