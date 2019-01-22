@@ -11,7 +11,7 @@ The Perl program has a dependency to the JSON::Parse library, which you can inst
 
 Once the PODs are running simply run: `perl runNetPerfTest.pl`
 Within the program simple `kubectl` commands are executed and the output is parsed. I know this is a very poor approach, yet it is so simple everyone can understand what is going on.
-The row output of the cmd commands will be printed to `STDERR`, so in case you only want to see the measurement results just run `perl runNetPerfTest.pl 2>>log.txt`.
+The raw output of the cmd commands will be printed to `STDERR`, so in case you only want to see the measurement results just run `perl runNetPerfTest.pl 2>>log.txt`.
 
 The following scenarios are measured:
 
@@ -32,11 +32,11 @@ In all scenarios* the following metrics are measured with the corresponding tool
 | # | Tool | Metrics | Unit |
 | - | ---- | ------- | ---- |
 | 1 | Iperf | Bulk Throughput | bits / sec | 
-| 2 | Netperf in TCP_RR mode | Latency (50,90 and 99 percentiles) and Transaction rate | seconds and transactions / sec | 
+| 2 | Netperf in TCP_RR mode | Latency (50, 90 and 99 percentiles) and Transaction rate | seconds and transactions / sec | 
 | 3 | Netperf in TCP_CRR mode | Transaction rate | transactions / sec | 
-| 4 | Fortio using HTTP 1.0 | Latency (50,90 and 99 percentiles) and Transaction rate | seconds and queries / sec | 
-| 5 | Fortio using HTTP 1.1 | Latency (50,90 and 99 percentiles) and Transaction rate | seconds and queries / sec | 
-| 6 | Fortio using GRPC | Latency (50,90 and 99 percentiles) and Transaction rate | seconds and queries / sec | 
+| 4 | Fortio using HTTP 1.0 | Latency (50, 90 and 99 percentiles) and Transaction rate | seconds and queries / sec | 
+| 5 | Fortio using HTTP 1.1 | Latency (50, 90 and 99 percentiles) and Transaction rate | seconds and queries / sec | 
+| 6 | Fortio using GRPC | Latency (50, 90 and 99 percentiles) and Transaction rate | seconds and queries / sec | 
 
 You can use the `--nobaseline` argument to skip the baselane measurements, since baseline measurements tends to have the same result.
 Thus run `perl runNetPerfTest.pl --nobaseline 2>>log.txt` to run only scenarios #4, #6 and #9.
