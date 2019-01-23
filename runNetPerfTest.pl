@@ -23,7 +23,7 @@ use JSON::Parse ':all';
 #maximum number of measurements in different types
 my $numberOfLocalhostMeasurements = 2;
 my $numberOfInterNodeMeasurements = 4;
-my $iperfTime = 20;
+my $iperfTime = 2;
 
 my $netperfRequestPacketSize = 32;
 my $netperfResponsePacketSize = 1024;
@@ -58,7 +58,7 @@ foreach my $node (@randArray) {
 	my $targetIP = $nodes{$node}->{'IPaddress'};
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput on Node $node: $iperf\n"; 
+	print "Localhost Iperf throughput test on Node $node: $iperf\n"; 
 
 	my $netperfRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_RR', 'P50_LATENCY,P90_LATENCY,P99_LATENCY,THROUGHPUT,THROUGHPUT_UNITS');
 	print "Localhost NetPerf TCP_RR test on Node $node (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
@@ -83,7 +83,7 @@ foreach my $podName (@randArray) {
 	my $targetIP = $pods{$podName}->{'IPaddress'};
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput on POD $podName: $iperf\n"; 
+	print "Localhost Iperf throughput test on POD $podName: $iperf\n"; 
 
 	my $netperfRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_RR', 'P50_LATENCY,P90_LATENCY,P99_LATENCY,THROUGHPUT,THROUGHPUT_UNITS');
 	print "Localhost NetPerf TCP_RR test on POD $podName (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
@@ -107,7 +107,7 @@ foreach my $podName (@randArray) {
 	my $targetIP = $pods{$podName}->{'NodeIP'};
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput between POD $podName and it's Node: $pods{$podName}->{NodeName}: $iperf\n"; 
+	print "Localhost Iperf throughput test between POD $podName and it's Node: $pods{$podName}->{NodeName}: $iperf\n"; 
 
 	my $netperfRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_RR', 'P50_LATENCY,P90_LATENCY,P99_LATENCY,THROUGHPUT,THROUGHPUT_UNITS');
 	print "Localhost NetPerf TCP_RR test between POD $podName and it's Node: $pods{$podName}->{NodeName} (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
@@ -131,7 +131,7 @@ foreach my $podName (keys %randHash) {
 	my $targetIP = $pods{$randHash{$podName}}->{'IPaddress'};
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput between POD $podName and POD $randHash{$podName}: $iperf\n"; 
+	print "Localhost Iperf throughput test between POD $podName and POD $randHash{$podName}: $iperf\n"; 
 
 	my $netperfRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_RR', 'P50_LATENCY,P90_LATENCY,P99_LATENCY,THROUGHPUT,THROUGHPUT_UNITS');
 	print "Localhost NetPerf TCP_RR test between POD $podName and POD $randHash{$podName} (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
@@ -160,22 +160,22 @@ foreach my $node (keys %randNodePairs) {
 	my $targetIP = $nodes{$randNodePairs{$node}}->{'IPaddress'};
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput between Node $node and Node $randNodePairs{$node}: $iperf\n"; 
+	print "InterNode Iperf throughput test between Node $node and Node $randNodePairs{$node}: $iperf\n"; 
 
 	my $netperfRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_RR', 'P50_LATENCY,P90_LATENCY,P99_LATENCY,THROUGHPUT,THROUGHPUT_UNITS');
-	print "Localhost NetPerf TCP_RR test between Node $node and Node $randNodePairs{$node} (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
+	print "InterNode NetPerf TCP_RR test between Node $node and Node $randNodePairs{$node} (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
 
 	my $netperfCRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_CRR', 'THROUGHPUT,THROUGHPUT_UNITS');
-	print "Localhost NetPerf TCP_CRR test between Node $node and Node $randNodePairs{$node}(HTTP API like transaction rate): $netperfCRR\n"; 
+	print "InterNode NetPerf TCP_CRR test between Node $node and Node $randNodePairs{$node}(HTTP API like transaction rate): $netperfCRR\n"; 
 
 	my $fortioHTTP10 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1 -http1.0');
-	print "Localhost Fortio using HTTP 1.0 between Node $node and Node $randNodePairs{$node}: $fortioHTTP10\n"; 
+	print "InterNode Fortio using HTTP 1.0 between Node $node and Node $randNodePairs{$node}: $fortioHTTP10\n"; 
 	
 	my $fortioHTTP11 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1');
-	print "Localhost Fortio using HTTP 1.1 between Node $node and Node $randNodePairs{$node}: $fortioHTTP11\n"; 
+	print "InterNode Fortio using HTTP 1.1 between Node $node and Node $randNodePairs{$node}: $fortioHTTP11\n"; 
 
 	my $fortioGRPC = &runFortio($podName, $targetIP,, $iperfTime, '-qps 0 -c 1 -grpc -ping');
-	print "Localhost Fortio using GRPC between Node $node and Node $randNodePairs{$node}: $fortioGRPC\n"; 	
+	print "InterNode Fortio using GRPC between Node $node and Node $randNodePairs{$node}: $fortioGRPC\n"; 	
 }
 
 #run Iperf between PODs running on differnet nodes to see performance degradation
@@ -184,22 +184,22 @@ foreach my $podName (keys %randHash) {
  	my $targetIP = $pods{$randHash{$podName}}->{'IPaddress'};
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput between POD $podName and POD $randHash{$podName}: $iperf\n"; 
+	print "InterNode Iperf throughput test between POD $podName and POD $randHash{$podName}: $iperf\n"; 
 
 	my $netperfRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_RR', 'P50_LATENCY,P90_LATENCY,P99_LATENCY,THROUGHPUT,THROUGHPUT_UNITS');
-	print "Localhost NetPerf TCP_RR test between POD $podName and POD $randHash{$podName} (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
+	print "InterNode NetPerf TCP_RR test between POD $podName and POD $randHash{$podName} (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
 
 	my $netperfCRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_CRR', 'THROUGHPUT,THROUGHPUT_UNITS');
-	print "Localhost NetPerf TCP_CRR test between POD $podName and POD $randHash{$podName}(HTTP API like transaction rate): $netperfCRR\n"; 
+	print "InterNode NetPerf TCP_CRR test between POD $podName and POD $randHash{$podName}(HTTP API like transaction rate): $netperfCRR\n"; 
 
 	my $fortioHTTP10 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1 -http1.0');
-	print "Localhost Fortio using HTTP 1.0 between POD $podName and POD $randHash{$podName}: $fortioHTTP10\n"; 
+	print "InterNode Fortio using HTTP 1.0 between POD $podName and POD $randHash{$podName}: $fortioHTTP10\n"; 
 	
 	my $fortioHTTP11 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1');
-	print "Localhost Fortio using HTTP 1.1 between POD $podName and POD $randHash{$podName}: $fortioHTTP11\n"; 
+	print "InterNode Fortio using HTTP 1.1 between POD $podName and POD $randHash{$podName}: $fortioHTTP11\n"; 
 
 	my $fortioGRPC = &runFortio($podName, $targetIP,, $iperfTime, '-qps 0 -c 1 -grpc -ping');
-	print "Localhost Fortio using GRPC between POD $podName and POD $randHash{$podName}: $fortioGRPC\n"; 	
+	print "InterNode Fortio using GRPC between POD $podName and POD $randHash{$podName}: $fortioGRPC\n"; 	
 
 }
 
@@ -209,22 +209,22 @@ foreach my $podName (keys %randHash) {
  	my $targetIP = $pods{$randHash{$podName}}->{'NodeIP'};
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}: $iperf\n"; 
+	print "InterNode Iperf throughput test between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}: $iperf\n"; 
 
 	my $netperfRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_RR', 'P50_LATENCY,P90_LATENCY,P99_LATENCY,THROUGHPUT,THROUGHPUT_UNITS');
-	print "Localhost NetPerf TCP_RR test between POD $podName and Node $pods{$randHash{$podName}}->{NodeName} (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
+	print "InterNode NetPerf TCP_RR test between POD $podName and Node $pods{$randHash{$podName}}->{NodeName} (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
 
 	my $netperfCRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_CRR', 'THROUGHPUT,THROUGHPUT_UNITS');
-	print "Localhost NetPerf TCP_CRR test between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}(HTTP API like transaction rate): $netperfCRR\n"; 
+	print "InterNode NetPerf TCP_CRR test between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}(HTTP API like transaction rate): $netperfCRR\n"; 
 
 	my $fortioHTTP10 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1 -http1.0');
-	print "Localhost Fortio using HTTP 1.0 between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}: $fortioHTTP10\n"; 
+	print "InterNode Fortio using HTTP 1.0 between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}: $fortioHTTP10\n"; 
 	
 	my $fortioHTTP11 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1');
-	print "Localhost Fortio using HTTP 1.1 between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}: $fortioHTTP11\n"; 
+	print "InterNode Fortio using HTTP 1.1 between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}: $fortioHTTP11\n"; 
 
 	my $fortioGRPC = &runFortio($podName, $targetIP,, $iperfTime, '-qps 0 -c 1 -grpc -ping');
-	print "Localhost Fortio using GRPC between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}: $fortioGRPC\n"; 	
+	print "InterNode Fortio using GRPC between POD $podName and Node $pods{$randHash{$podName}}->{NodeName}: $fortioGRPC\n"; 	
 }
 
 #run Iperf a node and a POD located on a different node to see difference between asymetric routes
@@ -234,22 +234,22 @@ foreach my $pod (keys %randHash) {
 	my $targetIP = $pods{$pod}->{'IPaddress'};
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod: $iperf\n"; 
+	print "InterNode Iperf throughput test between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod: $iperf\n"; 
 
 	my $netperfRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_RR', 'P50_LATENCY,P90_LATENCY,P99_LATENCY,THROUGHPUT,THROUGHPUT_UNITS');
-	print "Localhost NetPerf TCP_RR test between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
+	print "InterNode NetPerf TCP_RR test between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod (lantency 50,90 and 99 percentiles in us and DB like transaction rate): $netperfRR\n"; 
 
 	my $netperfCRR = &runNetperf($podName, $targetIP, $iperfTime, 'TCP_CRR', 'THROUGHPUT,THROUGHPUT_UNITS');
-	print "Localhost NetPerf TCP_CRR test between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod(HTTP API like transaction rate): $netperfCRR\n"; 
+	print "InterNode NetPerf TCP_CRR test between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod(HTTP API like transaction rate): $netperfCRR\n"; 
 
 	my $fortioHTTP10 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1 -http1.0');
-	print "Localhost Fortio using HTTP 1.0 between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod: $fortioHTTP10\n"; 
+	print "InterNode Fortio using HTTP 1.0 between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod: $fortioHTTP10\n"; 
 	
 	my $fortioHTTP11 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1');
-	print "Localhost Fortio using HTTP 1.1 between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod: $fortioHTTP11\n"; 
+	print "InterNode Fortio using HTTP 1.1 between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod: $fortioHTTP11\n"; 
 
 	my $fortioGRPC = &runFortio($podName, $targetIP,, $iperfTime, '-qps 0 -c 1 -grpc -ping');
-	print "Localhost Fortio using GRPC between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod: $fortioGRPC\n"; 	
+	print "InterNode Fortio using GRPC between Node $pods{$randHash{$pod}}->{NodeName} and POD $pod: $fortioGRPC\n"; 	
 }
 
 #run Iperf between PODs and Service IP to see kube-proxy performance
@@ -259,16 +259,16 @@ foreach my $podName (keys %randHash) {
 	my $targetIP = $serviceIP;
 	
 	my $iperf = &runIperf($podName, $targetIP, $iperfTime);
-	print "Localhost throughput between POD $podName and netperf-server service with IP $serviceIP: $iperf\n"; 
+	print "ClusterIP based Iperf throughput test between POD $podName and netperf-server service with IP $serviceIP: $iperf\n"; 
 
 	my $fortioHTTP10 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1 -http1.0');
-	print "Localhost Fortio using HTTP 1.0 between POD $podName and netperf-server service with IP $serviceIP: $fortioHTTP10\n"; 
+	print "ClusterIP based Fortio using HTTP 1.0 between POD $podName and netperf-server service with IP $serviceIP: $fortioHTTP10\n"; 
 	
 	my $fortioHTTP11 = &runFortio($podName, $targetIP, $iperfTime, '-qps 0 -c 1');
-	print "Localhost Fortio using HTTP 1.1 between POD $podName and netperf-server service with IP $serviceIP: $fortioHTTP11\n"; 
+	print "ClusterIP based Fortio using HTTP 1.1 between POD $podName and netperf-server service with IP $serviceIP: $fortioHTTP11\n"; 
 
 	my $fortioGRPC = &runFortio($podName, $targetIP,, $iperfTime, '-qps 0 -c 1 -grpc -ping');
-	print "Localhost Fortio using GRPC between POD $podName and netperf-server service with IP $serviceIP: $fortioGRPC\n"; 	
+	print "ClusterIP based Fortio using GRPC between POD $podName and netperf-server service with IP $serviceIP: $fortioGRPC\n"; 	
 }
 
 sub runIperf {
@@ -281,6 +281,7 @@ sub runIperf {
 		$lastLine = $_;
 	}
 	close(IPERF);
+	chomp($lastLine);
 	$lastLine =~ s/.*?(\d+\.\d+ .bits\/sec).*/$1/;
 	return $lastLine;
 }
@@ -294,6 +295,7 @@ sub runNetperf {
 		print STDERR $_;
 		$lastLine = $_;
 	}
+	chomp($lastLine);
 	close(NETPERF);
 	return $lastLine;
 }
@@ -301,16 +303,31 @@ sub runNetperf {
 sub runFortio {
 	my ($pod, $serverIP, $time, $flags) = @_;
 	my $lastLine = '';
+	my $outputstring = '';
 	my $port = '';
 	$port = ':8080' unless ($flags =~ /grpc/);
     print STDERR "running command: kubectl exec -it $pod -- fortio load $flags -t ${time}s $serverIP$port \n";
 	open(FORTIO, "kubectl exec -it $pod -- fortio load $flags -t ${time}s $serverIP$port | ");
-	while (<FORTIO>) {
-		print STDERR $_;
-		$lastLine = $_;
+	while (my $line = <FORTIO>) {
+		print STDERR $line;
+		$line =~ s/\n|\r//g;
+		$line =~ s/[^0-9a-zA-z %.,]//g;
+		$line =~ s/\t/ /g;
+		if ($line =~ /target 50% (.*)/) {
+			$outputstring .= $1 . ', ';
+		}
+		elsif ($line =~ /target 90% (.*)/) {
+			$outputstring .= $1 . ', ';
+		}
+		elsif ($line =~ /target 99% (.*)/) {
+			$outputstring .= $1 . ', ';
+		}
+		$lastLine = $line;
 	}
+	$lastLine =~ s/^.*,//;
+	$outputstring .= $lastLine;
 	close(FORTIO);
-	return $lastLine;
+	return $outputstring;
 }
 
 sub randomKeysFromHash {
